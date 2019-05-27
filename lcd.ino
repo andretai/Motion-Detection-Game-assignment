@@ -1,5 +1,5 @@
-#define trigPin 2
-#define echoPin 1
+#define trigPin 9
+#define echoPin 8
 int Buzzer = 3;
 
 #define NOTE_B0  31
@@ -197,7 +197,7 @@ int underworld_tempo[] = {
 #include <LiquidCrystal.h> // includes the LiquidCrystal Library 
 LiquidCrystal lcd(12, 11, 7, 6, 5, 4); // Creates an LC object. Parameters: (rs, enable, d4, d5, d6, d7)
 
-int p1score=0, p2score=0, count=1;
+int p1score=0, p2score=0, count=0;
 
 void setup() { 
    Serial.begin (9600);
@@ -220,30 +220,29 @@ void loop() {
       if(count%2==0){
              lcd.setCursor(0,0);
              lcd.print("PLAYER 1'S TURN");
+             delay(1500);
              if(sense()){
                p1score++;
                goal(1);
                lcd.setCursor(3,1);
                lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
+               delay(1000);
              } 
       } else {
              lcd.setCursor(0,0);
              lcd.print("PLAYER 2'S TURN");
+             delay(1500);
              if(sense()){
-                p2score++;
+               p2score++;
                goal(2);
                lcd.setCursor(3,1);
                lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
+               delay(1000);
              } 
       }
+      delay(1000);
       count++;
-//      if((p1score==5 && p2score==5)){
-//          count=0;
-//          p1score=p2score=0;
-//          lcd.setCursor(3,1);
-//          lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
-//      }
-      if(count==10 && (p1score==0 && p2score==0)){
+      if(count==10 && p1score==p2score){
           count=0;
           p1score=p2score=0;
           lcd.setCursor(3,1);
@@ -251,7 +250,7 @@ void loop() {
       }
    }
    
-   if(p1score==5){
+   if(p1score>p2score){
        lcd.setCursor(0,0);
        lcd.print("PLAYER ONE WINS!!");
        sing(1);
@@ -269,7 +268,7 @@ bool sense(){
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
   distance = (duration/2) / 29.1;
-  
+  delay(10000);
   if (distance >= 10 || distance <= 0){
     Serial.println("no object detected");
     digitalWrite(Buzzer, LOW);
@@ -281,17 +280,10 @@ bool sense(){
     delay(500);
     tone(Buzzer, 400); // play 400 Hz tone for 500 ms
     delay(500);
-    tone(Buzzer, 800); // play 800Hz tone for 500ms
-    delay(500);
-    tone(Buzzer, 400); // play 400 Hz tone for 500 ms
-    delay(500);
-    tone(Buzzer, 800); // play 800Hz tone for 500ms
-    delay(500);
     noTone(Buzzer);
     return true;
   }
-  delay(300);
-  return true;
+  return false;
 }
 
 int song = 0;

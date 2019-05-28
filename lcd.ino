@@ -216,11 +216,11 @@ void loop() {
    lcd.setCursor(3,1);
    lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
 
-   while(count<10){
+   while(count<20){
       if(count%2==0){
              lcd.setCursor(0,0);
              lcd.print("PLAYER 1'S TURN");
-             delay(1500);
+             delay(2000);
              if(sense()){
                p1score++;
                goal(1);
@@ -228,10 +228,11 @@ void loop() {
                lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
                delay(1000);
              } 
+             delay(1000);
       } else {
              lcd.setCursor(0,0);
              lcd.print("PLAYER 2'S TURN");
-             delay(1500);
+             delay(2000);
              if(sense()){
                p2score++;
                goal(2);
@@ -239,15 +240,15 @@ void loop() {
                lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
                delay(1000);
              } 
+             delay(1000);
       }
-      delay(1000);
       count++;
-      if(count==10 && p1score==p2score){
-          count=0;
-          p1score=p2score=0;
-          lcd.setCursor(3,1);
-          lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
-      }
+//      if(count==20 && p1score==p2score){
+//          count=0;
+//          p1score=p2score=0;
+//          lcd.setCursor(3,1);
+//          lcd.print("P1 "+String(p1score)+"-"+String(p2score)+" P2");
+//      }
    }
    
    if(p1score>p2score){
@@ -257,7 +258,7 @@ void loop() {
    } else {
        lcd.setCursor(0,0);
        lcd.print("PLAYER TWO WINS!!");
-       sing(2);
+       sing(1);
    }
 }
 
@@ -266,20 +267,22 @@ bool sense(){
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(1000);
   digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
+  duration = pulseIn(echoPin, HIGH, 1000);
   distance = (duration/2) / 29.1;
-  delay(10000);
-  if (distance >= 10 || distance <= 0){
+
+  if (distance >= 8 || distance <= 0){
     Serial.println("no object detected");
     digitalWrite(Buzzer, LOW);
+    delay(1500);
   } else {
     Serial.println("object detected");
-    tone(Buzzer, 400); // play 400 Hz tone for 500 ms
-    delay(500);
-    tone(Buzzer, 800); // play 800Hz tone for 500ms
-    delay(500);
-    tone(Buzzer, 400); // play 400 Hz tone for 500 ms
-    delay(500);
+//    tone(Buzzer, 400); // play 400 Hz tone for 500 ms
+//    delay(500);
+//    tone(Buzzer, 800); // play 800Hz tone for 500ms
+//    delay(500);
+//    tone(Buzzer, 400); // play 400 Hz tone for 500 ms
+//    delay(500);
+    sing(1);
     noTone(Buzzer);
     return true;
   }
